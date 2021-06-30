@@ -25,12 +25,12 @@ pipeline {
 	sh 'rm -rf testcase/target'
         sh '''
 	#!/bin/bash
-        cat EOF << | ssh deploy@localhost
         
+	cat EOF << | {ssh deploy@localhost
 	ls
         pwd
 	cd demo-mockup
-        ./start.sh
+        ./start.sh}
         
 	EOF
 	'''
