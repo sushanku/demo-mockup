@@ -10,6 +10,7 @@ pipeline {
     withCredentials([usernamePassword(credentialsId: 'sshDeploy', passwordVariable: 'password', usernameVariable: 'userName')]) {
         remote.user = userName
         remote.password = password
+    }
     stage('Build') {
       
       steps {
