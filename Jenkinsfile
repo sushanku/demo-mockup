@@ -35,11 +35,11 @@ pipeline {
 	sshPut remote: remote, from:'target/test-1.0-SNAPSHOT-jar-with-dependencies.jar', into: 'demo-mockup', override: true
 	sh 'rm -rf testcase/target'
 	sshCommand remote: remote, command: 'bash demo-mockup/start.sh'
-	sh 'cd testcase'
-	sh 'pwd'
-	sh 'mvn test "-Dtest=Test.Runner"'
-	sh 'cd ..'
-	sh 'pwd'
+	sh '''
+	cd testcase
+	pwd
+	mvn test "-Dtest=Test.Runner"
+	'''
         archiveArtifacts 'testcase/target/surefire-reports/*html'
 	sshCommand remote: remote, command: 'bash demo-mockup/stop.sh'
       }
