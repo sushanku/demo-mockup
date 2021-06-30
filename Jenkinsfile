@@ -22,21 +22,39 @@ pipeline {
       steps {
 	sh 'echo "transfer jar file to deployment server"'
 	sh 'scp /tmp/test-1.0-SNAPSHOT-jar-with-dependencies.jar deploy@localhost:demo-mockup'
-        sh 'ssh -t deploy@localhost << EOF \
-		ls && cd demo-mockup && ./start.sh \
-		EOF'
+        sh '''
+		ssh -t deploy@localhost
+		ls
+		cd demo-mockup
+		./start.sh 
+	   '''
 	sh 'mvn test "-Dtestcase/test=Test.Runner"'
         archiveArtifacts 'testcase/target/surefire-reports/*html'
 	sh 'rm -rf testcase/target'
-	sh 'ssh deploy@localhost && cd ./demo-mockup && ./stop.sh'
+        sh '''
+                ssh -t deploy@localhost
+                ls
+                cd demo-mockup
+                ./stop.sh
+           '''
       }
     }
 
     stage('Deploy') {
       steps {
-	sh 'ssh deploy@localhost && cd ./demo-mockup && ./start.sh'
+        sh '''
+                ssh -t deploy@localhost
+                ls
+                cd demo-mockup
+                ./start.sh
+           '''
         input 'Finished using the mockup maven app? (Click "Proceed" to continue)'
-	sh 'ssh deploy@localhost && cd ./demo-mockup && ./stop.sh'
+        sh '''
+                ssh -t deploy@localhost
+                ls
+                cd demo-mockup
+                ./stop.sh
+           '''
         sh 'echo Thank You'
       }
     }
