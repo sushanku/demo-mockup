@@ -24,9 +24,9 @@ pipeline {
 	sh 'scp /tmp/test-1.0-SNAPSHOT-jar-with-dependencies.jar deploy@localhost:demo-mockup'
         sh '''
 		ssh -t deploy@localhost << EOF 
-		ls
-		cd demo-mockup
-		./start.sh
+		ls \
+		cd demo-mockup \
+		./start.sh \
 		EOF
 	   '''
 	sh 'mvn test "-Dtestcase/test=Test.Runner"'
