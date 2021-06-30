@@ -1,16 +1,17 @@
+def remote = [:]
+remote.name = "localhost"
+remote.host = "localhost"
+remote.allowAnyHosts = true  
+
+withCredentials([usernamePassword(credentialsId: 'sshDeploy', passwordVariable: 'password', usernameVariable: 'userName')]) {
+	remote.user = userName
+	remote.password = password
+}
+
 pipeline {
   agent any
 
-  def remote = [:]
-  remote.name = "localhost"
-  remote.host = "localhost"
-  remote.allowAnyHosts = true  
-
   stages {
-    withCredentials([usernamePassword(credentialsId: 'sshDeploy', passwordVariable: 'password', usernameVariable: 'userName')]) {
-        remote.user = userName
-        remote.password = password
-    }
     stage('Build') {
       
       steps {
