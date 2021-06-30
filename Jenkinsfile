@@ -34,28 +34,19 @@ pipeline {
 	sshCommand remote: remote, command: 'ls demo-mockup'
 	sshPut remote: remote, from:'target/test-1.0-SNAPSHOT-jar-with-dependencies.jar', into: 'demo-mockup', override: true
 	sh 'rm -rf testcase/target'
-	sshScript remote: remote, script: './demo-mockup/start.sh'
+	sshCommand remote: remote, command: 'bash ./demo-mockup/start.sh'
 	sh 'mvn test "-Dtestcase/test=Test.Runner"'
         archiveArtifacts 'testcase/target/surefire-reports/*html'
+	sshCommand remote: remote, command: 'bash ./demo-mockup/stop.sh'
       }
     }
 
     stage('Deploy') {
       steps {
-        sh '''
-                ssh -t deploy@localhost
-                ls
-                cd demo-mockup
-                ./start.sh
-           '''
+	sshCommand remote: remote, command: 'bash ./demo-mockup/start.sh'
         input 'Finished using the mockup maven app? (Click "Proceed" to continue)'
-        sh '''
-                ssh -t deploy@localhost
-                ls
-                cd demo-mockup
-                ./stop.sh
-           '''
         sh 'echo Thank You'
+	sshCommand remote: remote, command: 'bash ./demo-mockup/stop.sh'
       }
     }
 
