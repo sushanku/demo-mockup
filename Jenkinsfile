@@ -24,11 +24,11 @@ pipeline {
 	sh 'scp /tmp/test-1.0-SNAPSHOT-jar-with-dependencies.jar deploy@localhost:demo-mockup'
 	sh 'rm -rf testcase/target'
         sh '''
-		ssh -t deploy@localhost  <<"ENDSSH" \
-		cd demo-mockup \
-		./start.sh \
-		ENDSSH
-  	'''
+	ssh -t deploy@localhost  <<"ENDSSH"
+	cd demo-mockup
+	./start.sh
+	ENDSSH
+  	'''.stripIndent()
 	sh 'mvn test "-Dtestcase/test=Test.Runner"'
         archiveArtifacts 'testcase/target/surefire-reports/*html'
       }
