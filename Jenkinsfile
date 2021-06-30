@@ -24,6 +24,7 @@ pipeline {
 	sh 'scp /tmp/test-1.0-SNAPSHOT-jar-with-dependencies.jar deploy@localhost:demo-mockup'
 	sh 'rm -rf testcase/target'
         sh '''
+	#!/bin/bash
         cat EOF << | ssh deploy@localhost
         
 	ls
