@@ -24,7 +24,7 @@ pipeline {
 	sh 'scp /tmp/test-1.0-SNAPSHOT-jar-with-dependencies.jar deploy@localhost:demo-mockup'
 	sh 'rm -rf testcase/target'
         sh '''
-	ssh -t deploy@localhost  <<"ENDSSH"
+	ssh deploy@localhost  <<ENDSSH
 	cd demo-mockup
 	./start.sh
 	ENDSSH
