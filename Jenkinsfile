@@ -1,11 +1,19 @@
 pipeline {
   agent any
+
+  def remote = [:]
+  remote.name = "localhost"
+  remote.host = "localhost"
+  remote.allowAnyHosts = true  
+
   stages {
+    withCredentials([usernamePassword(credentialsId: 'sshDeploy', passwordVariable: 'password', usernameVariable: 'userName')]) {
+        remote.user = userName
+        remote.password = password
     stage('Build') {
       
       steps {
         sh 'mvn clean install'
-	sh 'cp target/test-1.0-SNAPSHOT-jar-with-dependencies.jar /tmp'
 	archiveArtifacts 'target/test-1.0-SNAPSHOT-jar-with-dependencies.jar'
       }
     }
@@ -21,9 +29,10 @@ pipeline {
       }
       steps {
 	sh 'echo "transfer jar file to deployment server"'
-	sh 'scp /tmp/test-1.0-SNAPSHOT-jar-with-dependencies.jar deploy@localhost:'
+	sshCommand remote: remote, command: 'ls demo-mockup'
+	sshPut remote: remote, from:'target/test-1.0-SNAPSHOT-jar-with-dependencies.jar', into: 'demo-mockup', override: true
 	sh 'rm -rf testcase/target'
-        sh 'ssh deploy@localhost; ./start.sh'
+	sshScript remote: remote, script: './demo-mockup/start.sh'
 	sh 'mvn test "-Dtestcase/test=Test.Runner"'
         archiveArtifacts 'testcase/target/surefire-reports/*html'
       }
