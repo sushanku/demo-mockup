@@ -2,11 +2,6 @@ pipeline {
   agent any
   stages {
     stage('Build') {
-      post {
-        failure {
-          emailext(attachmentsPattern: 'testcase/target/surefire-reports/*html', subject: "Jenkins Build ${currentBuild.currentResult}: Job ${env.JOB_NAME}", body: "${currentBuild.currentResult}: Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}", attachLog: true, to: 'sushan@moco.com.np', from: 'sushan@moco.com.np')
-        }
-      }
       
       steps {
         sh 'mvn clean install'
@@ -27,7 +22,10 @@ pipeline {
       steps {
 	sh 'echo "transfer jar file to deployment server"'
 	sh 'scp /tmp/test-1.0-SNAPSHOT-jar-with-dependencies.jar deploy@localhost:demo-mockup'
-        sh 'ssh deploy@localhost && cd ./demo-mockup && ./start.sh'
+        sh 'ssh deploy@localhost'
+	sh 'pwd'
+	sh 'cd ./demo-mockup'
+	sh './start.sh'
 	sh 'mvn test "-Dtestcase/test=Test.Runner"'
         archiveArtifacts 'testcase/target/surefire-reports/*html'
 	sh 'rm -rf testcase/target'
