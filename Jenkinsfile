@@ -23,7 +23,7 @@ pipeline {
 	sh 'echo "transfer jar file to deployment server"'
 	sh 'scp /tmp/test-1.0-SNAPSHOT-jar-with-dependencies.jar deploy@localhost:'
 	sh 'rm -rf testcase/target'
-        sh 'deploy@localhost && ./start.sh'
+        sh 'ssh deploy@localhost && ./start.sh'
 	sh 'mvn test "-Dtestcase/test=Test.Runner"'
         archiveArtifacts 'testcase/target/surefire-reports/*html'
       }
