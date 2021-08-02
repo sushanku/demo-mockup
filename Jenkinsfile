@@ -32,7 +32,7 @@ pipeline {
       steps {
 	sh 'echo "transfer jar file to deployment server"'
 	sshCommand remote: remote, command: 'ls demo-mockup'
-// 	sshPut remote: remote, from:'target/test-1.0-SNAPSHOT-jar-with-dependencies.jar', into: 'demo-mockup', override: true
+	sshPut remote: remote, from:'target/test-1.0-SNAPSHOT-jar-with-dependencies.jar', into: 'demo-mockup'
 	sh 'rm -rf testcase/target'
 	sshCommand remote: remote, command: 'bash demo-mockup/start.sh'
 	sh '''
